@@ -16,11 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Ruby (for Jekyll)
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7' # specify the Ruby version for Jekyll
-          
+          ruby-version: '2.7'
+
       - name: Install Jekyll and Bundler
         run: |
           gem install jekyll bundler
@@ -29,10 +29,10 @@ jobs:
         run: |
           bundle exec jekyll build
 
-      - name: Upload artifact (build output)
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_site' # Jekyll's default build directory
+          path: './_site'
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,4 +45,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages # deploy to the gh-pages branch
+          branch: gh-pages
