@@ -16,32 +16,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Set up Ruby (for Jekyll)
+        uses: ruby/setup-ruby@v1
         with:
-          node-version: '18'
+          ruby-version: '2.7' # specify the Ruby version for Jekyll
+          
+      - name: Install Jekyll and Bundler
+        run: |
+          gem install jekyll bundler
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
+      - name: Build with Jekyll
+        run: |
+          bundle exec jekyll build
+
+      - name: Upload artifact (build output)
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+          path: './_site' # Jekyll's default build directory
 
-      - name: Install dependencies
-        run: |
-          npm install
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Run tests
-        run: |
-          npm test
-
-      - name: Build the application
-        run: |
-          npm run build
-
-      - name: Deploy to production (example step)
-        run: |
-          echo "Deploying application..."
-          # Add your deployment script here
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          branch: gh-pages # deploy to the gh-pages branch
