@@ -19,7 +19,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  
+          node-version: '18'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
 
       - name: Install dependencies
         run: |
@@ -28,3 +36,12 @@ jobs:
       - name: Run tests
         run: |
           npm test
+
+      - name: Build the application
+        run: |
+          npm run build
+
+      - name: Deploy to production (example step)
+        run: |
+          echo "Deploying application..."
+          # Add your deployment script here
