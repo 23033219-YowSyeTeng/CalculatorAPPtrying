@@ -11,7 +11,7 @@ on:
 permissions: 
   contents: read
   pages: write
-  id-token: write  # ✅ Required for GitHub Pages deployment
+  id-token: write  # ✅ Required for deployment
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # ✅ Updated
+        uses: actions/checkout@v4  # ✅ Updated version
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -29,16 +29,16 @@ jobs:
       - name: Install Jekyll and Bundler
         run: |
           gem install jekyll bundler
+          bundle install
 
       - name: Build with Jekyll
         run: |
-          bundle install
           bundle exec jekyll build
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4  # ✅ Updated
+        uses: actions/upload-artifact@v4  # ✅ Corrected upload
         with:
-          name: site-artifact
+          name: github-pages  # 🔥 MUST MATCH deployment artifact name!
           path: './_site'
 
   deploy:
@@ -51,4 +51,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4  # ✅ Corrected action
+        uses: actions/deploy-pages@v4  # ✅ Correct deployment
