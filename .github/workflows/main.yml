@@ -23,16 +23,18 @@ jobs:
 
       - name: Install Jekyll and Bundler
         run: |
-          gem install jekyll bundler
+          gem install bundler
+          bundle install
 
       - name: Build with Jekyll
         run: |
           bundle exec jekyll build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
-          path: './_site'
+          name: github-pages
+          path: _site
 
   deploy:
     runs-on: ubuntu-latest
