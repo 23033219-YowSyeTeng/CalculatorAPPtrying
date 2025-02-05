@@ -8,7 +8,7 @@ on:
     branches:
       - main
 
-permissions: 
+permissions:
   contents: read
   pages: write
   id-token: write  # ✅ Required for deployment
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # ✅ Updated version
+        uses: actions/checkout@v4  # ✅ Ensures latest repo version
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -31,15 +31,23 @@ jobs:
           gem install jekyll bundler
           bundle install
 
+      - name: Clean old Jekyll cache
+        run: rm -rf _site .jekyll-cache  # ✅ Ensures a fresh build
+
       - name: Build with Jekyll
-        run: |
-          bundle exec jekyll build
+        run: bundle exec jekyll build
+
+      - name: Debug: Check _site directory
+        run: ls -lah _site  # ✅ Ensures the build output exists
+
+      - name: Remove symlinks (if any)
+        run: find _site -type l -exec rm -f {} +  # ✅ Fixes symlink issue
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4  # ✅ Corrected upload
+        uses: actions/upload-artifact@v4
         with:
-          name: github-pages  # 🔥 MUST MATCH deployment artifact name!
-          path: './_site'
+          name: github-pages  # ✅ MUST match deployment artifact name!
+          path: ./_site
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,4 +59,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4  # ✅ Correct deployment
+        uses: actions/deploy-pages@v4  # ✅ Correct deployment action
